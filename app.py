@@ -163,20 +163,27 @@ def procesar_contrato(contrato_file, knowledge_files, enable_rag, enable_chat):
         with st.spinner("🔧 Configurando Vertex AI..."):
             
             # --- INICIO DE LÓGICA DE CREDENCIALES CORREGIDA ---
-            if "gcp_service_account" not in st.secrets:
-                st.error("❌ Secreto 'gcp_service_account' no encontrado en Streamlit Secrets.")
+            if "GCP_SA_JSON" not in st.secrets:
+                st.error("❌ Secreto 'GCP_SA_JSON' no encontrado. Asegúrese de usar el formato de clave única en Streamlit Secrets.")
                 return
-            
-            # Crea el objeto de credenciales directamente del secreto
-            # (Requiere 'from google.oauth2 import service_account' en app.py)
+
+            # Lee la cadena JSON RAW y la parsea a diccionario en Python.
+            # Esto evita la corrupción PEM.
+            try:
+                credentials_info = json.loads(st.secrets["GCP_SA_JSON"])
+            except json.JSONDecodeError as e:
+                st.error(f"❌ Error al decodificar el secreto JSON. Revise el formato en Streamlit Secrets. Error: {e}")
+                return
+
+            # 1. Crea el objeto de credenciales directamente del diccionario
             credentials = service_account.Credentials.from_service_account_info(
-                st.secrets["gcp_service_account"],
+                credentials_info,
                 scopes=['https://www.googleapis.com/auth/cloud-platform']
             )
             
-            # Inicializa vertexai globalmente, usando el objeto credentials
+            # 2. Inicializa vertexai globalmente
             vertexai.init(
-                project=st.secrets["gcp_service_account"]["project_id"],
+                project=credentials_info.get("project_id", "utec-478003"),
                 location="us-central1", # **VERIFICA** que tu región sea 'us-central1'
                 credentials=credentials
             )
@@ -204,7 +211,7 @@ def procesar_contrato(contrato_file, knowledge_files, enable_rag, enable_chat):
             # Inicializar procesador
             # MODIFICACIÓN CRUCIAL: Pasar el objeto 'credentials'
             processor = ContractProcessor(
-                credentials=credentials, # <--- SE PASA EL OBJETO CORRECTO
+                credentials=credentials, 
                 enable_llm=True,
                 enable_rag=enable_rag,
                 enable_chat=enable_chat
@@ -284,7 +291,6 @@ def procesar_contrato(contrato_file, knowledge_files, enable_rag, enable_chat):
     except Exception as e:
         st.error(f"❌ Error durante el procesamiento: {str(e)}")
         st.exception(e)
-
 def mostrar_resultados():
     """
     Muestra los resultados del análisis
