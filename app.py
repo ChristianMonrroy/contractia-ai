@@ -19,7 +19,16 @@ from utils import (
     generar_reporte_markdown,
     crear_zip_resultados
 )
+import json
+import tempfile
 
+# Configurar credenciales para Streamlit Cloud
+if "gcp_service_account" in st.secrets:
+    service_account_info = dict(st.secrets["gcp_service_account"])
+    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.json') as f:
+        json.dump(service_account_info, f)
+        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = f.name
+        
 # Configuración de la página
 st.set_page_config(
     page_title="CONTRACTIA AI - Auditoría de Contratos APP",
