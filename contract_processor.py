@@ -22,11 +22,12 @@ class ContractProcessor:
     Procesador principal de contratos APP
     """
     
-    def __init__(self, enable_llm=True, enable_rag=False, enable_chat=False):
+    def __init__(self, credentials=None, enable_llm=True, enable_rag=False, enable_chat=False):
         """
         Inicializa el procesador con configuraciones
         
         Args:
+            credentials: Objeto de credenciales de Google Cloud
             enable_llm: Habilitar uso de LLM para análisis
             enable_rag: Habilitar RAG avanzado
             enable_chat: Habilitar sistema de Q&A
@@ -35,13 +36,20 @@ class ContractProcessor:
         self.enable_rag = enable_rag
         self.enable_chat = enable_chat
         
-        # Inicializar embeddings y LLM
+        # Inicializar embeddings y LLM (aproximadamente línea 39)
         if enable_llm:
-            self.embeddings = VertexAIEmbeddings(model_name="textembedding-gecko@latest")
+            # 2. Pasa las credenciales a VertexAIEmbeddings
+            self.embeddings = VertexAIEmbeddings(
+                model_name="textembedding-gecko@latest",
+                credentials=credentials # <--- MODIFICACIÓN
+            )
+            
+            # 3. Pasa las credenciales a ChatVertexAI
             self.llm = ChatVertexAI(
                 model_name="gemini-2.0-flash-exp",
                 temperature=0.1,
-                max_tokens=8192
+                max_tokens=8192,
+                credentials=credentials # <--- MODIFICACIÓN
             )
         
         # Configuraciones
