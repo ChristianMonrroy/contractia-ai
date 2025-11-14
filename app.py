@@ -20,7 +20,6 @@ from utils import (
     crear_zip_resultados
 )
 import json
-import tempfile
 from google.oauth2 import service_account
         
 # Configuración de la página
