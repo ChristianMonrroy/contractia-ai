@@ -159,11 +159,28 @@ def procesar_contrato(contrato_file, knowledge_files, enable_rag, enable_chat):
     Procesa el contrato subido usando el sistema de análisis
     """
     try:
-        # Configurar Vertex AI
+        # Configurar Vertex AI y obtener las credenciales
         with st.spinner("🔧 Configurando Vertex AI..."):
-            if not configurar_entorno_vertexai():
-                st.error("❌ Error al configurar Vertex AI. Verifica las credenciales.")
+            
+            # --- INICIO DE LÓGICA DE CREDENCIALES CORREGIDA ---
+            if "gcp_service_account" not in st.secrets:
+                st.error("❌ Secreto 'gcp_service_account' no encontrado en Streamlit Secrets.")
                 return
+            
+            # Crea el objeto de credenciales directamente del secreto
+            # (Requiere 'from google.oauth2 import service_account' en app.py)
+            credentials = service_account.Credentials.from_service_account_info(
+                st.secrets["gcp_service_account"],
+                scopes=['https://www.googleapis.com/auth/cloud-platform']
+            )
+            
+            # Inicializa vertexai globalmente, usando el objeto credentials
+            vertexai.init(
+                project=st.secrets["gcp_service_account"]["project_id"],
+                location="us-central1", # **VERIFICA** que tu región sea 'us-central1'
+                credentials=credentials
+            )
+            # --- FIN DE LÓGICA DE CREDENCIALES CORREGIDA ---
         
         # Crear directorio temporal
         with tempfile.TemporaryDirectory() as temp_dir:
@@ -185,7 +202,9 @@ def procesar_contrato(contrato_file, knowledge_files, enable_rag, enable_chat):
                         f.write(kf.read())
             
             # Inicializar procesador
+            # MODIFICACIÓN CRUCIAL: Pasar el objeto 'credentials'
             processor = ContractProcessor(
+                credentials=credentials, # <--- SE PASA EL OBJETO CORRECTO
                 enable_llm=True,
                 enable_rag=enable_rag,
                 enable_chat=enable_chat
