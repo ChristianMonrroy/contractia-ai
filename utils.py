@@ -9,6 +9,42 @@ from datetime import datetime
 from typing import Dict
 import zipfile
 from pathlib import Path
+import streamlit as st
+from google.oauth2 import service_account
+from google.cloud import aiplatform
+import json
+
+# Esta función ahora retorna el objeto credentials
+def obtener_credenciales_vertexai():
+    if "GCP_SA_JSON" in st.secrets:
+        try:
+            # Carga el JSON literal
+            credentials_info = json.loads(st.secrets["GCP_SA_JSON"])
+
+            # Crea el objeto de credenciales directamente desde el diccionario
+            credentials = service_account.Credentials.from_service_account_info(
+                credentials_info,
+                scopes=['https://www.googleapis.com/auth/cloud-platform']
+            )
+
+            # Opcional: inicializar aiplatform para otras librerías
+            aiplatform.init(
+                project=credentials_info.get("project_id"),
+                location="us-central1", 
+                credentials=credentials # Pasamos el objeto
+            )
+
+            st.success("✅ Credenciales de Google Cloud cargadas correctamente.")
+            return credentials, credentials_info.get("project_id")
+
+        except Exception as e:
+            st.error(f"Error al procesar el secreto de Google: {e}")
+            return None, None
+
+    else:
+        st.error("❌ Secreto 'GCP_SA_JSON' no encontrado. Verifique Streamlit Secrets.")
+        return None, None
+        
 
 def configurar_entorno_vertexai() -> bool:
     """
