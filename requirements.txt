@@ -1,33 +1,27 @@
-# CONTRACTIA AI - Dependencias
-# Sistema de Auditoría Automática de Contratos APP
+# CONTRACTIA AI - Requirements para Streamlit Cloud
+# Versión CORREGIDA - Compatible con Python 3.13
 
 # Framework Web
-streamlit==1.31.0
+streamlit>=1.31.0
 
-# Google Cloud & Vertex AI
-google-cloud-aiplatform==1.38.0
-vertexai==1.38.0
+# Google Cloud & Vertex AI (CORREGIDO)
+google-cloud-aiplatform>=1.70.0
 
-# LangChain y componentes
-langchain==0.1.10
-langchain-core==0.1.28
-langchain-community==0.0.24
-langchain-google-vertexai==0.1.0
-langchain-text-splitters==0.0.1
-langchain-unstructured==0.1.0
+# LangChain - Versiones compatibles
+langchain>=0.1.0
+langchain-core>=0.1.0
+langchain-community>=0.0.20
+langchain-google-vertexai>=0.1.0
+langchain-text-splitters>=0.0.1
 
 # Procesamiento de documentos
-pypdf==4.0.1
-unstructured[docx]==0.12.4
-python-docx==1.1.0
+pypdf>=3.17.0
+python-docx>=1.1.0
+unstructured>=0.10.0
 
 # Vector store
-faiss-cpu==1.7.4
+faiss-cpu>=1.7.4
 
 # Utilidades
-tqdm==4.66.1
-python-dotenv==1.0.1
-
-# Análisis y procesamiento
-numpy==1.24.3
-pandas==2.0.3
+tqdm>=4.66.0
+python-dotenv>=1.0.0
