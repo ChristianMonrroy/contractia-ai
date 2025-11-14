@@ -82,7 +82,7 @@ class ContractProcessor:
                         if file_path.suffix.lower() == '.pdf':
                             loader = PyPDFLoader(str(file_path))
                         elif file_path.suffix.lower() == '.docx':
-                            loader = UnstructuredLoader(str(file_path))
+                            loader = UnstructuredFileLoader(str(file_path))
                         else:
                             continue
                         
