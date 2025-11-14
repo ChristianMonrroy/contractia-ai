@@ -21,13 +21,7 @@ from utils import (
 )
 import json
 import tempfile
-
-# Configurar credenciales para Streamlit Cloud
-if "gcp_service_account" in st.secrets:
-    service_account_info = dict(st.secrets["gcp_service_account"])
-    with tempfile.NamedTemporaryFile(mode='w', delete=False, suffix='.json') as f:
-        json.dump(service_account_info, f)
-        os.environ['GOOGLE_APPLICATION_CREDENTIALS'] = f.name
+from google.oauth2 import service_account
         
 # Configuración de la página
 st.set_page_config(
