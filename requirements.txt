@@ -1,0 +1,33 @@
+# CONTRACTIA AI - Dependencias
+# Sistema de Auditoría Automática de Contratos APP
+
+# Framework Web
+streamlit==1.31.0
+
+# Google Cloud & Vertex AI
+google-cloud-aiplatform==1.38.0
+vertexai==1.38.0
+
+# LangChain y componentes
+langchain==0.1.10
+langchain-core==0.1.28
+langchain-community==0.0.24
+langchain-google-vertexai==0.1.0
+langchain-text-splitters==0.0.1
+langchain-unstructured==0.1.0
+
+# Procesamiento de documentos
+pypdf==4.0.1
+unstructured[docx]==0.12.4
+python-docx==1.1.0
+
+# Vector store
+faiss-cpu==1.7.4
+
+# Utilidades
+tqdm==4.66.1
+python-dotenv==1.0.1
+
+# Análisis y procesamiento
+numpy==1.24.3
+pandas==2.0.3
