@@ -13,7 +13,7 @@ from pathlib import Path
 from langchain_text_splitters import RecursiveCharacterTextSplitter
 from langchain_community.vectorstores import FAISS
 from langchain_community.document_loaders import PyPDFLoader
-from langchain_unstructured import UnstructuredLoader
+from langchain_community.document_loaders import UnstructuredFileLoader
 from langchain_google_vertexai import VertexAIEmbeddings, ChatVertexAI
 from langchain_core.prompts import PromptTemplate
 
